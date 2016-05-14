@@ -1,4 +1,9 @@
-.recent-changes-table {
-  background-color: #ddd;
+.headingStyle {
+  background-color: #D6C8E2;
   font-size: 19px;
+}
+
+.bodyStyle {
+  background-color: #C48DF7;
+  color: #fff;
 }

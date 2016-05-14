@@ -4,9 +4,12 @@ import ReactDOM from "react-dom";
 var RecentChangesTable = React.createClass({
   render: function() {
     return (
-      <table className="recent-changes-table">
-        {this.props.children}
-      </table>
+      <div>
+        <h1>Recent Changes</h1>
+        <table className="recent-changes-table">
+          {this.props.children}
+        </table>
+      </div>
     );
   }
 });
@@ -23,11 +26,11 @@ RecentChangesTable.Headings = React.createClass({
   render: function() {
     var headings = this.props.headings.map(function (name, index) {
       return <RecentChangesTable.Heading
-        key = {index}
+        key = {"heading-" + index}
         heading = {name} />;
     });
     return (
-      <thead><tr>{headings}</tr></thead>
+      <thead className="headingStyle"><tr>{headings}</tr></thead>
     );
   }
 });
@@ -53,17 +56,43 @@ RecentChangesTable.Rows = React.createClass({
     });
 
     return (
-      <tbody>{rows}</tbody>
+      <tbody className="bodyStyle">{rows}</tbody>
     );
   }
 });
 
 var App = React.createClass({
+  getInitialState: function () {
+    return {changeSets: []};
+  },
+
+  mapOpenLibraryDataToChangeSet: function (data) {
+    return data.map(function (change, index) {
+      return {
+        "when": jQuery.timeago(change.timestamp),
+        "who": change.author.key,
+        "desc": change.comment
+      }
+    });
+  },
+
+  componentDidMount: function () {
+    $.ajax({
+      url: "http://openlibrary.org/recentchanges.json?limit=10",
+      context: this,
+      dataType: "json",
+      type: "GET"
+    }).done(function (data) {
+      var changeSets = this.mapOpenLibraryDataToChangeSet(data);
+      this.setState({changeSets: changeSets});
+    });
+  },
+
   render: function() {
     return (
       <RecentChangesTable>
         <RecentChangesTable.Headings headings = {this.props.headings} />
-        <RecentChangesTable.Rows changeSets = {this.props.changeSets} />
+        <RecentChangesTable.Rows changeSets = {this.state.changeSets} />
       </RecentChangesTable>
     );
   }
