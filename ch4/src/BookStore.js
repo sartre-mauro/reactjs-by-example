@@ -246,10 +246,61 @@ var DeliveryDetails = React.createClass({
   }
 });
 
+var Confirmation = React.createClass({
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.updateFormData(this.props.data);
+  },
+
+  render() {
+    return (
+      <div>
+        <h1>Are you sure you want to submit the data?</h1>
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            <strong>Full Name</strong> : {this.props.data.fullName}
+          </div>
+          <div>
+            <strong>Contact Number</strong> : {this.props.data.contactNumber}
+          </div>
+          <div>
+            <strong>Shipping Address</strong> : {this.props.data.shippingAddress}
+          </div>
+          <div>
+            <strong>Selected Books</strong> :
+              {this.props.data.selectedBooks.join(", ")}
+          </div>
+          <button className="btn btn-success">Place Order</button>
+        </form>
+      </div>
+    );
+  }
+});
+
+var Success = React.createClass({
+  render() {
+    var numberOfDays = "1 to 2";
+
+    if (this.props.data.deliveryOption === "Normal") {
+      numberOfDays = "3 to 4";
+    }
+
+    return (
+      <div>
+        <h2>Thank you for shopping with us {this.props.data.fullName}</h2>
+        <h4>
+          You will soon get {this.props.data.selectedBooks.join(", ")}
+          at {this.props.data.shippingAddress} in approximately {numberOfDays} days.
+        </h4>
+      </div>
+    );
+  }
+});
+
 var BookStore = React.createClass({
-  // getInitialState() {
-  //   return ({ currentStep: 1, formValues: {} });
-  // },
+  getInitialState() {
+    return ({ currentStep: 1, formValues: {} });
+  },
 
   updateFormData(formData) {
     var formValues = Object.assign({}, this.state.formValues, formData);
@@ -270,6 +321,13 @@ var BookStore = React.createClass({
         return <ShippingDetails updateFormData={this.updateFormData} />;
       case 3:
         return <DeliveryDetails updateFormData={this.updateFormData} />;
+      case 4:
+        return <Confirmation data={this.state.formValues}
+          updateFormData={this.updateFormData} />;
+      case 5:
+        return <Success data={this.state.formValues}/>;
+      default:
+        return <BookList updateFormData={this.updateFormData} />;
     }
   }
 });
