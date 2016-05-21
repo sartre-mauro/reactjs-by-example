@@ -4,9 +4,9 @@ var BookList = React.createClass({
   getInitialState() {
     return ({
       books: [
-        {name: "Zero to One", author: "Peter Thiel"},
-        {name: "Monk who sold his Ferrari", author: "Robin Sharma"},
-        {name: "Wings of Fire", author: "A.P.J. Abdul Kalam"}
+        {id: 1, name: "Zero to One",                author: "Peter Thiel"},
+        {id: 2, name: "Monk who sold his Ferrari",  author: "Robin Sharma"},
+        {id: 3, name: "Wings of Fire",              author: "A.P.J. Abdul Kalam"}
       ],
       selectedBooks: [],
       error: false
@@ -66,11 +66,6 @@ var BookList = React.createClass({
         selectedBooks: this.state.selectedBooks
       });
     }
-
-    this.props.updateFormData({
-      selectedBooks: this.state.selectedBooks
-    });
-
     console.log("Form Submitted");
   },
 
@@ -331,3 +326,8 @@ var BookStore = React.createClass({
     }
   }
 });
+
+
+// module.exports = BookStore;
+
+export default BookStore;
